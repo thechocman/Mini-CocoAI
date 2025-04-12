@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CocoAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #f0f0f0;
+      overflow-x: hidden;
+    }header {
+  background: white;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-weight: 700;
+  margin: 0;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 16px;
+  margin-top: 5px;
+  color: gray;
+}
+
+.background-image {
+  width: 100vw;
+  height: 100vh;
+  background: url('https://qu.ax/Jhdak.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+
+#output {
+  position: absolute;
+  top: 30px;
+  width: 90%;
+  left: 5%;
+  font-weight: 300;
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  white-space: pre-wrap;
+}
+
+#inputBox {
+  position: absolute;
+  display: flex;
+  gap: 10px;
+  width: 90%;
+  left: 5%;
+  transition: top 0.3s ease;
+}
+
+#userInput {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid black;
+  background: transparent;
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CocoAI</h1>
+    <h2>Off-Line</h2>
+  </header>  <div class="background-image">
+    <div id="output">CocoAI responderá ciertas dudas… :-)</div>
+    <div id="inputBox">
+      <input type="text" id="userInput" placeholder="Escribe algo...">
+      <button onclick="procesarInput()">Enviar</button>
+    </div>
+  </div>  <script>
+    const output = document.getElementById("output");
+    const inputBox = document.getElementById("inputBox");
+    const input = document.getElementById("userInput");
+    let modoGuau = false;
+    const reglasProgramadas = {};
+    let nombreUsuario = null;
+
+    const saludos = [
+      "hello", "hola", "hla", "ola", "buenas tardes", "wenas tardes",
+      "buenos días", "buenos dias", "buenos díaz", "buenos diaz",
+      "qué tal", "qué tal?", "que tal", "que tal?"
+    ];
+
+    const consultasIdentidad = [
+      "quién eres", "quien eres", "que eres", "qué eres",
+      "quién sos", "quien sos", "qué sos", "que sos"
+    ];
+
+    function ajustarPosicionInput() {
+      const outputHeight = output.offsetHeight;
+      let nuevaTop = output.offsetTop + outputHeight + 20;
+      inputBox.style.top = `${nuevaTop}px`;
+    }
+
+    function escribirTextoGradualmente(texto) {
+      output.innerText = "";
+      let i = 0;
+      const velocidad = 20;
+      function escribir() {
+        if (i < texto.length) {
+          output.innerText += texto[i];
+          i++;
+          ajustarPosicionInput();
+          setTimeout(escribir, velocidad);
+        }
+      }
+      escribir();
+    }
+
+    function procesarInput() {
+      const texto = input.value.trim();
+      const textoLower = texto.toLowerCase();
+
+      const regexNombre = /(me llamo|mi nombre es|soy)\s+([a-záéíóúñ\s]+)/i;
+      const matchNombre = texto.match(regexNombre);
+      if (matchNombre) {
+        nombreUsuario = matchNombre[2].trim();
+        escribirTextoGradualmente(`Encantado, ${nombreUsuario}! :-D`);
+        input.value = "";
+        return;
+      }
+
+      const nombre = nombreUsuario || "usuario";
+
+      if (textoLower === "hola cocoai") {
+        escribirTextoGradualmente(`¡Hola, ${nombre}! :-)`);
+        modoGuau = false;
+        input.value = "";
+        return;
+      }
+
+      if (textoLower === "como estás") {
+        escribirTextoGradualmente("Bien, listo para ayudarte! Qué necesitas?");
+        modoGuau = false;
+        input.value = "";
+        return;
+      }
+
+      if (textoLower === "coño") {
+        escribirTextoGradualmente("Qué es eso?");
+        modoGuau = true;
+        input.value = "";
+        return;
+      }
+
+      if (modoGuau) {
+        escribirTextoGradualmente("Guau!");
+        modoGuau = false;
+        input.value = "";
+        return;
+      }
+
+      if (textoLower === "minecraft") {
+        escribirTextoGradualmente("Minecraft es un juego de Notch, hecho en 2009");
+        input.value = "";
+        return;
+      }
+
+      if (textoLower === "geometry dash") {
+        escribirTextoGradualmente("Geometry dash es un juego desarrollado por Roberto Pala en 2013 durante la crisis mundial");
+        input.value = "";
+        return;
+      }
+
+      if (textoLower === "adiós") {
+        escribirTextoGradualmente(`¡Adiós, ${nombre}! :-)`);
+        input.value = "";
+        return;
+      }
+
+      const graciasVariantes = ["gracias!", "gracias", "grasias", "grax"];
+      if (graciasVariantes.includes(textoLower)) {
+        const respuestasGracias = [
+          "Estoy aquí para ti ;-)",
+          "De nada :-)",
+          "Gracias a ti :-D",
+          "¡Lo que desees!"
+        ];
+        const seleccion = respuestasGracias[Math.floor(Math.random() * respuestasGracias.length)];
+        escribirTextoGradualmente(seleccion);
+        input.value = "";
+        return;
+      }
+
+      if (saludos.includes(textoLower)) {
+        const rand = Math.random();
+        if (rand < 0.04) {
+          escribirTextoGradualmente("Hola uwu.");
+        } else {
+          const saludosOpciones = [
+            "¡Hola! Me alegra verte :-)",
+            "Hola!",
+            "Holii",
+            "Holiii",
+            "Holi :-)",
+            "Holaa :-)"
+          ];
+          const respuesta = saludosOpciones[Math.floor(Math.random() * saludosOpciones.length)];
+          escribirTextoGradualmente(respuesta);
+        }
+        input.value = "";
+        return;
+      }
+
+      if (consultasIdentidad.includes(textoLower)) {
+        escribirTextoGradualmente("Soy una IA con información muy limitada, desarrollada por TheChocman, un crack. ¡Me puedes preguntar cosas On y Off-Line! De ahí viene mi nombre CocoAI Off-Line :-).");
+        input.value = "";
+        return;
+      }
+
+      const programacionRegex = /^si hago (.+), tú haces (.+)$/i;
+      const match = texto.match(programacionRegex);
+      if (match) {
+        const accion = match[1].trim().toLowerCase();
+        const respuesta = match[2].trim();
+        reglasProgramadas[accion] = respuesta;
+        escribirTextoGradualmente(`¡Entendido! Ahora si haces '${accion}', yo haré '${respuesta}'`);
+        input.value = "";
+        return;
+      }
+
+      if (reglasProgramadas[textoLower]) {
+        escribirTextoGradualmente(reglasProgramadas[textoLower]);
+        input.value = "";
+        return;
+      }
+
+      escribirTextoGradualmente(`¡No puedo hacer eso :-(! Pero puedes programarme diciendo ' Si hago (texto de usuario), tú haces (texto de usuario) ' :-)`);
+      input.value = "";
+    }
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        procesarInput();
+      }
+    });
+
+    window.onload = () => {
+      escribirTextoGradualmente("CocoAI responderá ciertas dudas… :-)");
+    };
+  </script></body>
+</html>
