@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CocoAI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    #output { margin-top: 20px; font-weight: bold; }
+    input[type="text"] { padding: 10px; width: 300px; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>CocoAI</h1>
+  <input type="text" id="userInput" placeholder="Escribe algo...">
+  <button onclick="procesarInput()">Enviar</button>
+  <div id="output"></div>
+
+  <script>
+    const output = document.getElementById("output");
+    const input = document.getElementById("userInput");
+    let modoGuau = false;
+    let esperandoProgramacion = false;
+    const reglasProgramadas = {};
+
+    function procesarInput() {
+      const texto = input.value.trim();
+      const textoLower = texto.toLowerCase();
+
+      // Respuestas fijas
+      if (textoLower === "hola cocoai") {
+        output.innerText = "¡Hola, usuario! :-)";
+        modoGuau = false;
+        return;
+      }
+
+      if (textoLower === "como estás") {
+        output.innerText = "Bien, listo para ayudarte! Qué necesitas?";
+        modoGuau = false;
+        return;
+      }
+
+      if (textoLower === "coño") {
+        output.innerText = "Qué es eso?";
+        modoGuau = true;
+        return;
+      }
+
+      if (modoGuau) {
+        output.innerText = "Guau!";
+        modoGuau = false;
+        return;
+      }
+
+      if (textoLower === "minecraft") {
+        output.innerText = "Minecraft es un juego de Notch, hecho en 2009";
+        return;
+      }
+
+      if (textoLower === "geometry dash") {
+        output.innerText = "Geometry dash es un juego desarrollado por Roberto Pala en 2013 durante la crisis mundial";
+        return;
+      }
+
+      if (textoLower === "adiós") {
+        output.innerText = "¡Adiós, usuario! :-)";
+        return;
+      }
+
+      // Programación
+      const programacionRegex = /^si hago (.+), tú haces (.+)$/i;
+      const match = texto.match(programacionRegex);
+      if (match) {
+        const accion = match[1].trim().toLowerCase();
+        const respuesta = match[2].trim();
+        reglasProgramadas[accion] = respuesta;
+        output.innerText = "¡Entendido! Ahora si haces '" + accion + "', yo haré '" + respuesta + "'";
+        esperandoProgramacion = false;
+        return;
+      }
+
+      if (reglasProgramadas[textoLower]) {
+        output.innerText = reglasProgramadas[textoLower];
+        return;
+      }
+
+      // Si no entiende
+      output.innerText = "¡No puedo hacer eso :-(! Pero puedes programarme diciendo ' Si hago (texto de usuario), tú haces (texto de usuario) ' :-)";
+      esperandoProgramacion = true;
+    }
+  </script>
+
+</body>
+</html>
